@@ -36,8 +36,6 @@ router.get('/new', (req, res) => {
 	res.render('new-book', { book: {}, title: 'New Book' });
 });
 
-
-
 /* POST create Book. */
 router.post('/new', asyncHandler(async (req, res) => {
 
@@ -54,15 +52,6 @@ router.post('/new', asyncHandler(async (req, res) => {
   }
 }));
 
-// /* Edit Book form. */
-// router.get("/:id/edit", asyncHandler(async(req, res) => {
-//   const Book = await Book.findByPk(req.params.id);
-//   if(Book) {
-//     res.render("Books/edit", { Book, title: "Edit Book" });      
-//   } else {
-//     res.sendStatus(404);
-//   }
-// }));
 
 /* GET individual Book. */
 router.get("/:id", asyncHandler(async (req, res) => {

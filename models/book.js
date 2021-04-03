@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
         }
       }
     },
-    genre: Sequelize.TEXT,
+    genre: Sequelize.STRING,
     year: Sequelize.INTEGER      
   }, { sequelize });
 
