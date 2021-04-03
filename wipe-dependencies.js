@@ -1,3 +1,5 @@
+// https://jh3y.medium.com/how-to-update-all-npm-packages-in-your-project-at-once-17a8981860ea
+
 const fs = require('fs')
 const wipeDependencies = () => {
   const file  = fs.readFileSync('package.json')
