@@ -1,24 +1,16 @@
-// const express = require('express');
-// const router = express.Router();
 
-// /* GET home page. */
-// router.get('/', (req, res, next) => {
-//   res.redirect("/books")
-// });
-
-// module.exports = router;
 
 const express = require('express');
 const router = express.Router();
 const Book = require('../models').Book;
-
+var err = new Error('Not found');
 /* Handler function to wrap each route. */
 function asyncHandler(cb){
   return async(req, res, next) => {
     try {
       await cb(req, res, next)
     } catch(error){
-      // Forward error to the global error handler
+      console.log(error);
       next(error);
     }
   }
@@ -27,7 +19,7 @@ function asyncHandler(cb){
 /* GET listing of Books. */
 router.get('/', asyncHandler(async (req, res) => {
   const Books = await Book.findAll({ order: [["createdAt", "DESC"]] });
-  console.log(Books);
+  //console.log(Books);
   res.render("index", { Books, title: "Sequelize-It!" });
 }));
 
@@ -54,14 +46,17 @@ router.post('/new', asyncHandler(async (req, res) => {
 
 
 /* GET individual Book. */
-router.get("/:id", asyncHandler(async (req, res) => {
+router.get("/:id", asyncHandler(async (req, res,next) => {
+  console.log('prelookup')
+  
   const book = await Book.findByPk(req.params.id);
+  console.log('postlookup')
   if(book) {
     res.render("./update-book", { book,  title: "Edit Book" });  
   } else {
-    
-    res.render("./page-not-found", { book,  title: `Get Book ${req.params.id}` }); 
- 
+
+    err.status = 404;
+    return next(err);
   }
 })); 
 
@@ -69,21 +64,20 @@ router.get("/:id", asyncHandler(async (req, res) => {
 router.post('/:id/edit', asyncHandler(async (req, res) => {
   let book;
   try {
-    console.log("req.params.id: " + req.params.id);
+    //console.log("req.params.id: " + req.params.id);
     book = await Book.findByPk(req.params.id);
-    console.log(" book id: " + JSON.stringify(book));
-    console.log("req.body: " + JSON.stringify(req.body))
     if(book) {
       await book.update(req.body);
       res.redirect("/"); 
     } else {
-      res.render("./page-not-found", { book,  title: `Edit Book ${req.params.id}` });
+
+      err.status = 404;
+      return next(err);
     }
   } catch (error) {
     if(error.name === "SequelizeValidationError") {
       book = await Book.build(req.body);
       book.id = req.params.id;
-      console.log("error.errors: " + JSON.stringify(error.errors))
       res.render("./update-book", { book, errors: error.errors, title: "Edit Book" })
 
     } else {
@@ -99,7 +93,8 @@ router.get("/:id/delete", asyncHandler(async (req, res) => {
   if(book) {
     res.render("delete", { book, title: "Delete Book" });
   } else {
-    res.render("./page-not-found", { book,  title: `Delete Book ${req.params.id}` });
+    err.status = 404;
+    return next(err);
   }
 }));
 
@@ -110,7 +105,8 @@ router.post('/:id/delete', asyncHandler(async (req ,res) => {
     await book.destroy();
     res.redirect("/");
   } else {
-    res.sendStatus(404);
+    err.status = 404;
+    return next(err);
   }
 }));
 

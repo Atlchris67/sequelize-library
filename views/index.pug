@@ -1,15 +1,7 @@
 extends ./layout
 
 block content
-  p Please leave actual comments that are helpful and describe issues.  I can not see the previous review, so saying "fix previous issues" is not helpful. To the best of my knowledge I tried to fix the issues. 
-  ol 
-    li I swapped to the included library.db (note this is not a requirement, I built my own db file using the environment based script from the lessons) 
-    li I made the 404 page friendly, see Page-Not-found.pug line 13.
-    li An http get request to localhost:3000/noroute is not an actual 500 level server error, it is a 404 route not found. There is a global error handler note line 35 in app.js 
-    li technically it is not requirement to use the lasted version of javascript library. In fact bloody edge libraries can introduce bugs. I purposely rolled back because a was having an issue. I fixed the issue and now have a script to autoupdate that I borrowed and documented the source.
-
-  p Again, please leave actual comments and describe issues. 
-
+ 
   p  
     a.button(href='/new') Create New Book
   
